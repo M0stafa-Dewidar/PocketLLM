@@ -67,8 +67,26 @@ app.use(
 );
 
 // ---------- Health Check ----------
-app.get("/v1/health", (req, res) => {
-  res.json({ status: "ok", model: MODEL_NAME });
+app.get("/v1/health", async (req, res) => {
+  try {
+    const response = await axios.get(`${OLLAMA_HOST}/api/tags`, { timeout: 2000 });
+    const modelNames = response.data.models.map((m) => m.name);
+
+    // Check if any loaded model matches MODEL_NAME (ignore tag like ":latest")
+    const isLoaded = modelNames.some((m) => m.split(":")[0] === MODEL_NAME);
+
+    return res.json({
+      status: isLoaded ? "running" : "no_running",
+      model: MODEL_NAME,
+      availableModels: modelNames,
+    });
+  } catch (err) {
+    return res.status(503).json({
+      status: "offline",
+      model: MODEL_NAME,
+      availableModels: [],
+    });
+  }
 });
 
 // ---------- Sessions API ----------

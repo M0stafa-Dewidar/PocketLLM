@@ -440,6 +440,8 @@
       if (loginUser.value === "admin" && loginPass.value === "1234") {
         overlay.style.display = "none";
         adminMain.style.display = "block";
+
+        refreshAll();
       } else {
         loginError.style.display = "block";
       }
@@ -474,8 +476,18 @@
       try {
         const res = await fetch(`${backend}/v1/health`);
         const j = await res.json();
-        healthText.textContent = `Healthy · ${j.model}`;
-        healthPill.classList.remove("health-offline");
+
+        if (j.status === "running") {
+          const modelName = j.availableModels?.[0] || "unknown";
+          healthText.textContent = `Healthy · ${modelName}`;
+          healthPill.classList.remove("health-offline");
+        } else if (j.status === "no_running") {
+          healthText.textContent = "No running model";
+          healthPill.classList.add("health-offline");
+        } else {
+          healthText.textContent = "Offline";
+          healthPill.classList.add("health-offline");
+        }
       } catch {
         healthText.textContent = "Offline";
         healthPill.classList.add("health-offline");
