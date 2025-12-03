@@ -578,6 +578,8 @@
       }
     }
 
+    setInterval(refreshHealth, 10000);
+
     function setSessionMeta() {
       if (!currentSessionId) {
         sessionMeta.textContent = 'No session selected';
@@ -651,6 +653,22 @@
 
       const prompt = promptInput.value.trim();
       if (!prompt) return;
+
+      let modelRunning = true;
+      try {
+          const healthResp = await fetch(`${backend}/v1/health`);
+          const healthData = await healthResp.json();
+          if (healthData.status !== 'running') {
+            modelRunning = false;
+          }
+      } catch (e) {
+          modelRunning = false;
+      }
+
+      if (!modelRunning) {
+        addMessage('ai', 'Model is currently offline. Please try again later.');
+        return;
+      }
 
       if (!currentSessionId) {
         await newSession();
