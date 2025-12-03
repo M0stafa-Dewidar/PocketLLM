@@ -558,12 +558,23 @@
     }
 
     async function refreshHealth() {
+      const healthEl = document.getElementById('health');
+      const dotEl = document.querySelector('.status-dot');
+
       try {
         const r = await fetch(`${backend}/v1/health`);
         const j = await r.json();
-        document.getElementById('health').textContent = `model: ${j.model}`;
+
+        if (j.status === 'running') {
+          dotEl.style.background = '#22c55e';
+          healthEl.textContent = `Model: ${j.model}`;
+        } else {
+          dotEl.style.background = '#ef4444';
+          healthEl.textContent = `Model Offline`;
+        }
       } catch (e) {
-        document.getElementById('health').textContent = 'backend offline';
+        dotEl.style.background = '#ef4444';
+        healthEl.textContent = 'Model offline';
       }
     }
 
