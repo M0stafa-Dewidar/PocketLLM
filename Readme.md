@@ -1,7 +1,7 @@
-# PocketLLM Portal — CSCI 578 Group Project
+# PocketLLM Portal - CSCI 578 Group Project
 
-**Group 1**
-Ashray Gattani, Neha Alshi, Sanchita Suryavanshi, Mostafa Dewidar, Riya Deorukhkar, Pratham Agarwal
+**Group 1** 
+- Ashray Gattani, Neha Alshi, Sanchita Suryavanshi, Mostafa Dewidar, Riya Deorukhkar, Pratham Agarwal
 
 ---
 
@@ -96,7 +96,6 @@ pocketllm/
 * **Port:** `11434`
 * **Purpose:** Runs the LLM (Llama 3.2)
 
----
 
 ### 2. **Backend Service (`pocketllm-backend`)**
 
@@ -111,7 +110,6 @@ CACHE_TTL_MS=600000
 PORT=3001
 ```
 
----
 
 ### 3. **Frontend Service (`pocketllm-frontend`)**
 
