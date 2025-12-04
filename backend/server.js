@@ -7,13 +7,11 @@ import crypto from "crypto";
 import fs from "fs";
 import { nanoid } from "nanoid";
 
-// ---------- ENV ----------
 const PORT = process.env.PORT || 3001;
 const OLLAMA_HOST = process.env.OLLAMA_HOST || "http://ollama:11434";
 const MODEL_NAME = process.env.OLLAMA_MODEL || "llama3.2";
-const CACHE_TTL_MS = parseInt(process.env.CACHE_TTL_MS || "600000"); // 10 min
+const CACHE_TTL_MS = parseInt(process.env.CACHE_TTL_MS || "600000");
 
-// ---------- Data Store (sessions + cache) ----------
 const DATA_DIR = process.env.DATA_DIR || "./data";
 const SESSIONS_FILE = `${DATA_DIR}/sessions.json`;
 const CACHE_FILE = `${DATA_DIR}/cache.json`;
@@ -34,7 +32,6 @@ const readCache = () => JSON.parse(fs.readFileSync(CACHE_FILE, "utf8"));
 const writeCache = (obj) =>
   fs.writeFileSync(CACHE_FILE, JSON.stringify(obj, null, 2));
 
-// ---------- Session Helpers ----------
 function appendTurn(sessionId, role, text) {
   const store = readSessions();
   const session = store.sessions.find((s) => s.id === sessionId);
@@ -48,13 +45,11 @@ function getSession(sessionId) {
   return readSessions().sessions.find((s) => s.id === sessionId) || null;
 }
 
-// ---------- Express Setup ----------
 const app = express();
 app.use(cors());
 app.use(express.json({ limit: "2mb" }));
 app.use(morgan("dev"));
 
-// ---------- FR-7: Rate Limiting ----------
 const getApiKey = (req) => req.header("x-api-key") || "anonymous";
 
 app.use(
@@ -66,13 +61,11 @@ app.use(
   })
 );
 
-// ---------- Health Check ----------
 app.get("/v1/health", async (req, res) => {
   try {
     const response = await axios.get(`${OLLAMA_HOST}/api/tags`, { timeout: 2000 });
     const modelNames = response.data.models.map((m) => m.name);
 
-    // Check if any loaded model matches MODEL_NAME (ignore tag like ":latest")
     const isLoaded = modelNames.some((m) => m.split(":")[0] === MODEL_NAME);
 
     return res.json({
@@ -89,7 +82,6 @@ app.get("/v1/health", async (req, res) => {
   }
 });
 
-// ---------- Sessions API ----------
 app.get("/v1/sessions", (req, res) => {
   res.json(readSessions().sessions);
 });
@@ -117,7 +109,6 @@ app.delete("/v1/sessions/:id", (req, res) => {
   res.json({ ok: true });
 });
 
-// ---------- Cache Endpoints ----------
 app.get("/v1/cache", (req, res) => {
   res.json({ keys: Object.keys(readCache().entries) });
 });
@@ -127,7 +118,6 @@ app.delete("/v1/cache", (req, res) => {
   res.json({ ok: true });
 });
 
-// ---------- Metrics ----------
 const metrics = {
   requests: 0,
   tokensStreamed: 0,
@@ -141,21 +131,18 @@ app.get("/v1/admin/metrics", (req, res) => {
   res.json(metrics);
 });
 
-// ---------- Cache Key Helper ----------
 const createCacheKey = (prompt, system, params) => {
   const h = crypto.createHash("sha256");
   h.update(JSON.stringify({ prompt, system, params }));
   return h.digest("hex");
 };
 
-// ---------- MAIN CHAT COMPLETION (SSE STREAMING) ----------
 app.post("/v1/chat/completions", async (req, res) => {
   metrics.requests++;
 
   try {
     const { prompt, params = {}, system = "", sessionId = null } = req.body;
 
-    // Save user turn
     if (sessionId) appendTurn(sessionId, "user", prompt);
 
     const key = createCacheKey(prompt, system, params);
@@ -163,7 +150,6 @@ app.post("/v1/chat/completions", async (req, res) => {
     const entry = cache.entries[key];
     const now = Date.now();
 
-    // ---------- CACHE HIT ----------
     if (entry && now - entry.createdAt < CACHE_TTL_MS) {
       metrics.cacheHits++;
 
@@ -179,7 +165,6 @@ app.post("/v1/chat/completions", async (req, res) => {
       return res.end();
     }
 
-    // ---------- CACHE MISS ----------
     metrics.cacheMisses++;
 
     res.setHeader("Content-Type", "text/event-stream");
@@ -237,7 +222,6 @@ app.post("/v1/chat/completions", async (req, res) => {
             res.end();
           }
         } catch (e) {
-          // ignore partial JSON chunks
         }
       }
     });
@@ -257,7 +241,6 @@ app.post("/v1/chat/completions", async (req, res) => {
   }
 });
 
-// ---------- Start Server ----------
 app.listen(PORT, () => {
   console.log(`PocketLLM backend listening on :${PORT}`);
 });

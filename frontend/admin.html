@@ -302,7 +302,6 @@
 
 <body>
 
-  <!-- LOGIN OVERLAY -->
   <div id="loginOverlay">
     <div id="loginBox">
       <h2>Admin Login</h2>
@@ -322,7 +321,6 @@
     </div>
   </div>
 
-  <!-- HEADER -->
   <header>
     <div class="brand">
       <div class="brand-dot"></div>
@@ -334,10 +332,8 @@
     </div>
   </header>
 
-  <!-- MAIN ADMIN DASHBOARD -->
   <main id="adminMain" style="display:none;">
     <div class="shell">
-      <!-- LEFT PANEL -->
       <div class="card">
         <div class="card-header">
           <div>
@@ -397,7 +393,6 @@
         </div>
       </div>
 
-      <!-- RIGHT PANEL -->
       <div class="card">
         <div class="card-header">
           <div>
@@ -424,11 +419,9 @@
     </div>
   </main>
 
-  <!-- JS -->
   <script>
     const backend = location.origin.replace(":3000", ":3001");
 
-    /* === LOGIN HANDLING === */
     const overlay = document.getElementById("loginOverlay");
     const adminMain = document.getElementById("adminMain");
     const loginUser = document.getElementById("loginUser");
@@ -446,8 +439,6 @@
         loginError.style.display = "block";
       }
     };
-
-    /* === DASHBOARD LOGIC === */
 
     const healthPill = document.getElementById("healthPill");
     const healthText = document.getElementById("healthText");
@@ -517,7 +508,6 @@
         );
         m_uptime.textContent = uptimeSec;
 
-        // RPI
         if (lastRequests === null) lastRequests = j.requests;
         else {
           const delta = j.requests - lastRequests;

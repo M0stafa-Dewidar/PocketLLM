@@ -7,13 +7,11 @@
 
 ## Overview
 
-PocketLLM is a three-tier client–server application that provides a lightweight llm portal powered by Ollama. The system includes a real-time chat interface, persistent sessions, intelligent caching, and an admin dashboard for system monitoring.
+PocketLLM is a three-tier application that provides a lightweight llm portal powered by Ollama. The system includes a real-time chat interface, persistent sessions, intelligent caching, and an admin dashboard for system monitoring.
 
 ---
 
 ## Architecture
-
-### **Three‑Tier Client–Server Design**
 
 ```
 ┌─────────────────┐     ┌─────────────────┐     ┌─────────────────┐
@@ -35,21 +33,19 @@ PocketLLM is a three-tier client–server application that provides a lightweigh
 
 ## Quick Start
 
-### 1. **Setup**
-
-```bash
-# Pull the required LLM model (Run inside the folder)
-docker exec -it ollama ollama pull llama3.2
-```
-
-### 2. **Launch the System**
+### 1. **Launch the System**
 
 ```bash
 # Build and start all services
 docker compose up -d --build
 ```
 
-### 3. **Access the Application**
+```bash
+# Pull the required LLM model (Run inside the folder)
+docker exec -it ollama ollama pull llama3.2
+```
+
+### 2. **Access the Application**
 
 * **Chat Portal:** [http://localhost:3000](http://localhost:3000)
 * **Admin Dashboard:** [http://localhost:3000/admin.html](http://localhost:3000/admin.html)

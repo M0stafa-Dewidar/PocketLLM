@@ -34,8 +34,6 @@
       overflow: hidden;
     }
 
-    /* Top bar */
-
     header {
       height: 56px;
       padding: 0 20px;
@@ -84,13 +82,11 @@
       background: #22c55e;
     }
 
-    /* Layout */
-
     main {
       display: grid;
       grid-template-columns: 260px minmax(0, 1fr);
       height: calc(100vh - 56px);
-      min-height: 0;        /* important for nested scroll */
+      min-height: 0;
     }
 
     aside {
@@ -182,14 +178,12 @@
       color: #ef4444;
     }
 
-    /* Main chat column */
-
     section {
       padding: 18px 22px;
       display: flex;
       justify-content: center;
       align-items: stretch;
-      min-height: 0;          /* allow chat-shell to shrink */
+      min-height: 0;
     }
 
     .chat-shell {
@@ -204,7 +198,7 @@
       border: 1px solid rgba(148, 163, 184, 0.28);
       padding: 16px 18px;
       height: 100%;
-      min-height: 0;          /* critical for scroll */
+      min-height: 0;
     }
 
     .chat-header {
@@ -230,8 +224,6 @@
       color: var(--text-muted);
     }
 
-    /* Messages area */
-
     .chat-body {
       flex: 1;
       overflow-y: auto;
@@ -239,7 +231,7 @@
       display: flex;
       flex-direction: column;
       gap: 8px;
-      min-height: 0;          /* allow content to scroll */
+      min-height: 0;
     }
 
     .msg-row {
@@ -283,8 +275,6 @@
       color: #9ca3af;
       margin: 2px 4px 6px;
     }
-
-    /* Input area */
 
     .chat-input {
       margin-top: 8px;
@@ -609,7 +599,7 @@
             currentSessionId = s.id;
             setSessionMeta();
             await loadSessionHistory();
-            refreshSessions(); // re-render to update active style
+            refreshSessions();
           };
 
           delBtn.onclick = async (ev) => {
@@ -680,7 +670,6 @@
       const max_tokens = parseInt(maxTokensInput.value, 10);
       const apiKey = apiKeyInput.value.trim();
 
-      // show user message
       addMessage('user', prompt);
       promptInput.value = '';
 
@@ -742,7 +731,6 @@
     });
     document.getElementById('newSession').onclick = newSession;
 
-    // initial load
     refreshHealth();
     refreshSessions();
     setSessionMeta();
